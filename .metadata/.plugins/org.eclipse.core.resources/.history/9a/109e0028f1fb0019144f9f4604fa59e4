@@ -156,7 +156,7 @@ public class PsqlController {
 
 			stmt = c.createStatement();
 			String sql = "INSERT INTO worker (person_nbr, name, address) "
-					+ "VALUES ('"+personNbr+"', '"+name+"', '"+address+"');";
+					+ "VALUES ('"+personNbr+"','"+name+" , '"+address+"');";
 			stmt.executeUpdate(sql);
 
 			stmt.close();
@@ -166,7 +166,7 @@ public class PsqlController {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		System.out.println("created entity in TABLE worker");
+		System.out.println("created entity in TABLE schedule");
 	}
 
 	//MARK: UPDATE Statement
@@ -175,13 +175,13 @@ public class PsqlController {
 	}
 
 	//MARK: SELECT statement
-	public Object[] selectTable(String table, String values, String where) {
+	public String[] selectTable(String table, String values, String where) {
 		return null;
 	}
 
 	public static void main(String[] args) {
 		PsqlController c = new PsqlController();
-		c.insertWorker("19830903-3123", "Hans Byström", "Lundavägen 32 Lund");
+		c.insertSchedule("Maskinen", "Store scenen", "18:00", "20:00", "friday");
 
 	}
 

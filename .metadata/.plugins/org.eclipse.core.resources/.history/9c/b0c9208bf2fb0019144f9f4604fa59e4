@@ -156,7 +156,7 @@ public class PsqlController {
 
 			stmt = c.createStatement();
 			String sql = "INSERT INTO worker (person_nbr, name, address) "
-					+ "VALUES ('"+personNbr+"', '"+name+"', '"+address+"');";
+					+ "VALUES ('"+personNbr+"','"+name+" , '"+address+"');";
 			stmt.executeUpdate(sql);
 
 			stmt.close();
@@ -181,7 +181,7 @@ public class PsqlController {
 
 	public static void main(String[] args) {
 		PsqlController c = new PsqlController();
-		c.insertWorker("19830903-3123", "Hans Byström", "Lundavägen 32 Lund");
+		c.insertSchedule("Maskinen", "Store scenen", "18:00", "20:00", "friday");
 
 	}
 
