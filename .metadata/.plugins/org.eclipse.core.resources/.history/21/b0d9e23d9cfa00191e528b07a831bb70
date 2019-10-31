@@ -1,0 +1,7 @@
+package model;
+
+public class ArtistInBand {
+	private String artist;
+	private String band;
+	private String role;
+}

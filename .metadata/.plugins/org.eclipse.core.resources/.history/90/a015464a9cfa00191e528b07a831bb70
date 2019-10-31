@@ -1,0 +1,15 @@
+package model;
+
+public class ArtistInBand {
+	private String artist;
+	private String band;
+	private String role;
+	
+	public ArtistInBand(String artist, String band, String role) {
+		this.artist = artist;
+		this.band = band;
+		this.role = role;
+	}
+	
+	
+}

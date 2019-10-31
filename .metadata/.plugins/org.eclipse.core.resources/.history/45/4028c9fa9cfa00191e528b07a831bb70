@@ -1,0 +1,16 @@
+package model;
+
+public class Worker {
+	private String personNbr;
+	private String name;
+	private String address;
+	
+	public Worker(String personNbr, String name, String address) {
+		this.personNbr = personNbr;
+		this.name = name;
+		this.address = address;
+	}
+	
+	
+
+}

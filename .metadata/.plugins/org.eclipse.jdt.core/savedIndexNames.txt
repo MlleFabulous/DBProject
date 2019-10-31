@@ -1,0 +1,5 @@
+INDEX VERSION 1.131+/Users/Robban/Desktop/Datavetenskap MAU/Termin 3/Databasteknik 7.5hp/Projekt/.metadata/.plugins/org.eclipse.jdt.core
+237889734.index
+4154239352.index
+4124611731.index
+4118765929.index

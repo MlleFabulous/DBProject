@@ -1,0 +1,16 @@
+package model;
+
+public class Schedule {
+	private String band;
+	private String scene;
+	private String time;
+	
+	public Schedule(String band, String scene, String time) {
+		this.band = band;
+		this.scene = scene;
+		this.time = time;
+	}
+	
+	
+
+}

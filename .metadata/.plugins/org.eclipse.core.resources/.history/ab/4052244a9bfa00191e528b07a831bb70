@@ -1,0 +1,7 @@
+package model;
+
+public class Schedule {
+	private String id;
+	private String name;
+
+}

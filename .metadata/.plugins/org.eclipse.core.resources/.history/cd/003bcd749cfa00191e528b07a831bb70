@@ -1,0 +1,18 @@
+package model;
+
+public class Band {
+	private String name;
+	private String country;
+	private String info;
+	private String contactPerson;
+
+	public Band(String name, String country, String info, String contactPerson) {
+		this.name = name;
+		this.country = country;
+		this.info = info;
+		this.contactPerson = contactPerson;
+	}
+
+
+
+}

@@ -1,0 +1,8 @@
+package model;
+
+public class Schedule {
+	private String band;
+	private String scene;
+	private String time;
+
+}
