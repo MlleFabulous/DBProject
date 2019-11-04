@@ -1,24 +1,14 @@
 package model;
 
 public class Scene {
-	private String nbr;
 	private String name;
 	private String capacity;
 	private String location;
 	
-	public Scene(String nbr, String name, String capacity, String location) {
-		this.nbr = nbr;
+	public Scene(String name, String capacity, String location) {
 		this.name = name;
 		this.capacity = capacity;
 		this.location = location;
-	}
-
-	public String getNbr() {
-		return nbr;
-	}
-
-	public void setNbr(String nbr) {
-		this.nbr = nbr;
 	}
 
 	public String getName() {

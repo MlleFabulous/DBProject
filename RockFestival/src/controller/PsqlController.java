@@ -2,7 +2,11 @@ package controller;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+
+import model.*;
 
 /**
  * Controller class for connecting and querying to an PostgreSQL database.
@@ -19,6 +23,7 @@ public class PsqlController {
 	}
 
 	//MARK: INSERT Statements
+
 	/**
 	 * Creates an Entity of artist in DB, using name of the artist
 	 * @param name - name of the artist 
@@ -33,7 +38,7 @@ public class PsqlController {
 
 			stmt = c.createStatement();
 			String sql = "INSERT INTO artist (name) "
-					+ "VALUES ('"+name+"');";
+					+ "VALUES ('"+name.toLowerCase()+"');";
 			stmt.executeUpdate(sql);
 
 			stmt.close();
@@ -54,7 +59,7 @@ public class PsqlController {
 	 * @param artist - name of the artist
 	 * @param band - name of the band
 	 */
-	public void insertArtistInBand(String artist, String band) {
+	public void insertArtistInBand(String artist, String band, String role) {
 		Connection c = null;
 		Statement stmt = null;
 		try {
@@ -63,8 +68,8 @@ public class PsqlController {
 			c.setAutoCommit(false);
 
 			stmt = c.createStatement();
-			String sql = "INSERT INTO artist_in_band (artist, band) "
-					+ "VALUES ((SELECT id FROM artist WHERE name='"+artist+"'), '"+band+"');";
+			String sql = "INSERT INTO artist_in_band (artist, band, role) "
+					+ "VALUES ((SELECT id FROM artist WHERE name='"+artist.toLowerCase()+"'), '"+band.toLowerCase()+"', '"+role.toLowerCase()+"');";
 			stmt.executeUpdate(sql);
 
 			stmt.close();
@@ -87,7 +92,7 @@ public class PsqlController {
 
 			stmt = c.createStatement();
 			String sql = "INSERT INTO band (name, country, info, contact_person) "
-					+ "VALUES ('"+name+"', '"+country+"', '"+info+"','"+contactPerson+"');";
+					+ "VALUES ('"+name.toLowerCase()+"', '"+country.toLowerCase()+"', '"+info.toLowerCase()+"','"+contactPerson.toLowerCase()+"');";
 			stmt.executeUpdate(sql);
 
 			stmt.close();
@@ -110,7 +115,7 @@ public class PsqlController {
 
 			stmt = c.createStatement();
 			String sql = "INSERT INTO scene (name, capacity, location) "
-					+ "VALUES ('"+name+"', "+capacity+", '"+location+"');";
+					+ "VALUES ('"+name.toLowerCase()+"', "+capacity+", '"+location.toLowerCase()+"');";
 			stmt.executeUpdate(sql);
 
 			stmt.close();
@@ -133,7 +138,7 @@ public class PsqlController {
 
 			stmt = c.createStatement();
 			String sql = "INSERT INTO schedule (band, scene, start, \"end\", day) "
-					+ "VALUES ('"+band+"','"+scene+" , '"+start+"', '"+end+"',UPPER('"+day+"'));";
+					+ "VALUES ('"+band.toLowerCase()+"','"+scene.toLowerCase()+"' , '"+start+"', '"+end+"','"+day.toLowerCase()+"');";
 			stmt.executeUpdate(sql);
 
 			stmt.close();
@@ -156,7 +161,7 @@ public class PsqlController {
 
 			stmt = c.createStatement();
 			String sql = "INSERT INTO worker (person_nbr, name, address) "
-					+ "VALUES ('"+personNbr+"', '"+name+"', '"+address+"');";
+					+ "VALUES ('"+personNbr+"', '"+name.toLowerCase()+"', '"+address.toLowerCase()+"');";
 			stmt.executeUpdate(sql);
 
 			stmt.close();
@@ -170,21 +175,266 @@ public class PsqlController {
 	}
 
 	//MARK: UPDATE Statement
+
 	public void updateTable(String table, String values, String where) {
 		//if where = null, do without where clause, vice versa! 
 	}
 
-	//MARK: SELECT statement
-	public Object[] selectTable(String table, String values, String where) {
-		return null;
+	//MARK: SELECT statements
+
+	/**
+	 * Retrieves data from Artist table in DB, all attributes will be fetched into an Artist 
+	 * Object where each attribute can be retrieved.
+	 * @param where - where-clause, if no where-clause is to be used, enter null
+	 * @return returns an array of Artist Objects
+	 */
+	public ArrayList<Artist> selectArtist(String where) {
+		Connection c = null;
+		Statement stmt = null;
+		ArrayList<Artist> retrievedData = new ArrayList<Artist>();
+		try {
+			Class.forName("org.postgresql.Driver");
+			c = DriverManager.getConnection(credentials);
+			c.setAutoCommit(false);
+
+			stmt = c.createStatement();
+			String sql;
+			if(where!=null) { //with WHERE clause
+				sql = "SELECT * FROM artist "
+						+ "WHERE "+where.toLowerCase()+";";
+			}else { //without WHERE clause
+				sql = "SELECT * FROM artist;";
+			}
+			ResultSet rs = stmt.executeQuery(sql);
+			while (rs.next()) { //loops through the fetched data and saves each entity as an Artist Object in the ArrayList
+				Artist a = new Artist(rs.getString("id"), rs.getString("name"));
+				retrievedData.add(a);
+			}
+
+			rs.close();
+			stmt.close();
+			c.commit();
+			c.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+		System.out.println("Retrieved data from TABLE artist");
+		return retrievedData;	
 	}
+
+	/**
+	 * Retrieves data from artist_in_band table in DB, all attributes will be fetched into an ArtistInBand 
+	 * Object where each attribute can be retrieved.
+	 * @param where - where-clause, if no where-clause is to be used, enter null
+	 * @return returns an array of ArtistInBand Objects
+	 */
+	public ArrayList<ArtistInBand> selectArtistInBand(String where) {
+		Connection c = null;
+		Statement stmt = null;
+		ArrayList<ArtistInBand> retrievedData = new ArrayList<ArtistInBand>();
+		try {
+			Class.forName("org.postgresql.Driver");
+			c = DriverManager.getConnection(credentials);
+			c.setAutoCommit(false);
+
+			stmt = c.createStatement();
+			String sql;
+			if(where!=null) { //with WHERE clause
+				sql = "SELECT * FROM artist_in_band "
+						+ "WHERE "+where.toLowerCase()+";";
+			}else { //without WHERE clause
+				sql = "SELECT * FROM artist_in_band;";
+			}
+			ResultSet rs = stmt.executeQuery(sql);
+			while (rs.next()) { //loops through the fetched data and saves each entity as an Artist Object in the ArrayList
+				ArtistInBand a = new ArtistInBand(rs.getString("artist"), rs.getString("band"), rs.getString("role"));
+				retrievedData.add(a);
+			}
+
+			rs.close();
+			stmt.close();
+			c.commit();
+			c.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+		System.out.println("Retrieved data from TABLE artist_in_band");
+		return retrievedData;	
+	}
+
+	/**
+	 * Retrieves data from Band table in DB, all attributes will be fetched into an Band 
+	 * Object where each attribute can be retrieved.
+	 * @param where - where-clause, if no where-clause is to be used, enter null
+	 * @return returns an array of Band Objects
+	 */
+	public ArrayList<Band> selectBand(String where) {
+		Connection c = null;
+		Statement stmt = null;
+		ArrayList<Band> retrievedData = new ArrayList<Band>();
+		try {
+			Class.forName("org.postgresql.Driver");
+			c = DriverManager.getConnection(credentials);
+			c.setAutoCommit(false);
+
+			stmt = c.createStatement();
+			String sql;
+			if(where!=null) { //with WHERE clause
+				sql = "SELECT * FROM band "
+						+ "WHERE "+where.toLowerCase()+";";
+			}else { //without WHERE clause
+				sql = "SELECT * FROM band;";
+			}
+			ResultSet rs = stmt.executeQuery(sql);
+			while (rs.next()) { //loops through the fetched data and saves each entity as an Artist Object in the ArrayList
+				Band a = new Band(rs.getString("name"), rs.getString("country"), rs.getString("info"), rs.getString("contact_person"));
+				retrievedData.add(a);
+			}
+
+			rs.close();
+			stmt.close();
+			c.commit();
+			c.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+		System.out.println("Retrieved data from TABLE band");
+		return retrievedData;	
+	}
+
+	/**
+	 * Retrieves data from Scene table in DB, all attributes will be fetched into an Scene 
+	 * Object where each attribute can be retrieved.
+	 * @param where - where-clause, if no where-clause is to be used, enter null
+	 * @return returns an array of Scene Objects
+	 */
+	public ArrayList<Scene> selectScene(String where) {
+		Connection c = null;
+		Statement stmt = null;
+		ArrayList<Scene> retrievedData = new ArrayList<Scene>();
+		try {
+			Class.forName("org.postgresql.Driver");
+			c = DriverManager.getConnection(credentials);
+			c.setAutoCommit(false);
+
+			stmt = c.createStatement();
+			String sql;
+			if(where!=null) { //with WHERE clause
+				sql = "SELECT * FROM scene "
+						+ "WHERE "+where.toLowerCase()+";";
+			}else { //without WHERE clause
+				sql = "SELECT * FROM scene;";
+			}
+			ResultSet rs = stmt.executeQuery(sql);
+			while (rs.next()) { //loops through the fetched data and saves each entity as an Artist Object in the ArrayList
+				Scene a = new Scene(rs.getString("name"), rs.getString("capacity"), rs.getString("location"));
+				retrievedData.add(a);
+			}
+			rs.close();
+			stmt.close();
+			c.commit();
+			c.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+		System.out.println("Retrieved data from TABLE scene");
+		return retrievedData;	
+	}
+	
+	/**
+	 * Retrieves data from Band table in DB, all attributes will be fetched into an Band 
+	 * Object where each attribute can be retrieved.
+	 * @param where - where-clause, if no where-clause is to be used, enter null
+	 * @return returns an array of Band Objects
+	 */
+	public ArrayList<Schedule> selectSchedule(String where) {
+		Connection c = null;
+		Statement stmt = null;
+		ArrayList<Schedule> retrievedData = new ArrayList<Schedule>();
+		try {
+			Class.forName("org.postgresql.Driver");
+			c = DriverManager.getConnection(credentials);
+			c.setAutoCommit(false);
+
+			stmt = c.createStatement();
+			String sql;
+			if(where!=null) { //with WHERE clause
+				sql = "SELECT * FROM schedule "
+						+ "WHERE "+where.toLowerCase()+";";
+			}else { //without WHERE clause
+				sql = "SELECT * FROM schedule;";
+			}
+			ResultSet rs = stmt.executeQuery(sql);
+			while (rs.next()) { //loops through the fetched data and saves each entity as an Artist Object in the ArrayList
+				Schedule a = new Schedule(rs.getString("band"), rs.getString("scene"), rs.getString("start"), rs.getString("end"), rs.getString("day"));
+				retrievedData.add(a);
+			}
+			rs.close();
+			stmt.close();
+			c.commit();
+			c.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+		System.out.println("Retrieved data from TABLE Schedule");
+		return retrievedData;	
+	}
+	
+	/**
+	 * Retrieves data from Band table in DB, all attributes will be fetched into an Band 
+	 * Object where each attribute can be retrieved.
+	 * @param where - where-clause, if no where-clause is to be used, enter null
+	 * @return returns an array of Band Objects
+	 */
+	public ArrayList<Worker> selectWorker(String where) {
+		Connection c = null;
+		Statement stmt = null;
+		ArrayList<Worker> retrievedData = new ArrayList<Worker>();
+		try {
+			Class.forName("org.postgresql.Driver");
+			c = DriverManager.getConnection(credentials);
+			c.setAutoCommit(false);
+
+			stmt = c.createStatement();
+			String sql;
+			if(where!=null) { //with WHERE clause
+				sql = "SELECT * FROM worker "
+						+ "WHERE "+where.toLowerCase()+";";
+			}else { //without WHERE clause
+				sql = "SELECT * FROM worker;";
+			}
+			ResultSet rs = stmt.executeQuery(sql);
+			while (rs.next()) { //loops through the fetched data and saves each entity as an Artist Object in the ArrayList
+				Worker a = new Worker(rs.getString("person_nbr"), rs.getString("name"), rs.getString("address"));
+				retrievedData.add(a);
+			}
+			rs.close();
+			stmt.close();
+			c.commit();
+			c.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+		System.out.println("Retrieved data from TABLE worker");
+		return retrievedData;	
+	}
+
 
 	public static void main(String[] args) {
 		PsqlController c = new PsqlController();
-		c.insertWorker("19830903-3123", "Hans Byström", "Lundavägen 32 Lund");
+		ArrayList<Worker> a = c.selectWorker(null);
+		for(Worker e: a) {
+			System.out.println(e.getAddress() + " " + e.getName() +" " + e.getPersonNbr());
+		}
+		
+
+
 
 	}
-
-
-
 }
