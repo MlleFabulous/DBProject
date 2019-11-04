@@ -1,0 +1,269 @@
+package view;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
+import javax.swing.border.Border;
+
+public class VisitorUI extends JPanel implements ActionListener {
+	// For upper panel
+	private JLabel lblTitle = new JLabel("SCHEDULE");
+
+	// For middple panel
+	private JLabel lblDay = new JLabel("DAY");
+	private JLabel lblDropScene = new JLabel("SCENE");
+
+	String[] strDays = { "Thursday", "Friday", "Saturday" };
+	JComboBox<String> listDays = new JComboBox<String>(strDays);
+	String[] strScenes = { "Scene A", "Scene B", "Scene C" };
+	JComboBox<String> listScenes = new JComboBox<String>(strScenes);
+
+	// For bottom panel
+	private JLabel lblScene = new JLabel("SCENE");
+	private JLabel lblBand = new JLabel("BAND");
+	private JLabel lblStart = new JLabel("START");
+	private JLabel lblFinish = new JLabel("FINISH");
+
+	// For areaBottomPanel
+	private JButton btnShow = new JButton("SHOW");
+
+	// Other instance variables
+	private JFrame frame;
+	private Font fontFirstTitle = new Font("SansSerif", Font.PLAIN, 30);
+	private Font fontSecondTitle = new Font("SansSerif", Font.PLAIN, 18);
+	private Font fontText = new Font("SansSerif", Font.ROMAN_BASELINE, 15);
+
+	Color clrBackground = new Color(55, 55, 55);
+	Color clrSpotifyGreen = new Color(78, 183, 57);
+	Color clrWhite = new Color(220, 219, 219);
+
+	/**
+	 * Constructor
+	 * 
+	 */
+	public VisitorUI() {
+		setBackground(clrBackground);
+
+		btnShow.setEnabled(false);
+		btnShow.addActionListener(this);
+
+		// DropDown for lblday and lblscene
+		listDays.setSelectedIndex(2); // 0 = thursday
+		listDays.addActionListener(this);
+//		
+		listScenes.setSelectedIndex(2); // 0 = scene A
+		listScenes.addActionListener(this);
+
+		add(upperPanel());
+		add(middlePanel());
+		add(bottomPanel());
+		add(areaBottomPanel());
+		add(buttonPanel());
+	}
+
+	public JPanel upperPanel() {
+		JPanel upperpanel = new JPanel(new BorderLayout());
+		upperpanel.setBackground(clrBackground);
+		upperpanel.setPreferredSize(new Dimension(800, 40));
+
+		lblTitle.setFont(fontFirstTitle);
+		lblTitle.setForeground(clrSpotifyGreen);
+		lblTitle.setHorizontalAlignment(JLabel.CENTER);
+
+		upperpanel.add(lblTitle, BorderLayout.CENTER); // west?????
+
+		return upperpanel;
+	}
+
+	public JPanel middlePanel() {
+		JPanel middlepanel = new JPanel(new GridLayout(1, 4));
+		middlepanel.setBackground(clrBackground);
+		middlepanel.setPreferredSize(new Dimension(800, 80));
+
+		lblDay.setFont(fontSecondTitle);
+		lblDay.setForeground(clrWhite);
+		lblDay.setHorizontalAlignment(JLabel.CENTER);
+		lblDay.setSize(200, 20);
+
+		lblDropScene.setFont(fontSecondTitle);
+		lblDropScene.setForeground(clrWhite);
+		lblDropScene.setHorizontalAlignment(JLabel.CENTER);
+		lblDropScene.setSize(200, 20);
+
+		((JLabel) listScenes.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
+		listScenes.setFont(fontText);
+		listScenes.setSize(200, 30);
+
+		((JLabel) listDays.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
+		listDays.setFont(fontText);
+		listDays.setSize(200, 30);
+
+//		middlepanel.add(listScenes, BorderLayout.CENTER);
+		middlepanel.add(lblDay, BorderLayout.WEST);
+		middlepanel.add(listDays, BorderLayout.WEST);
+		middlepanel.add(lblDropScene, BorderLayout.EAST);
+		middlepanel.add(listScenes, BorderLayout.EAST);
+
+		return middlepanel;
+	}
+
+	// Holds the labels. Under this panel is another panel that will hold the
+	// dynamic grid
+	public JPanel bottomPanel() {
+		JPanel bottompanel = new JPanel(new GridLayout(1, 4));
+		bottompanel.setBackground(clrBackground);
+		bottompanel.setPreferredSize(new Dimension(800, 60));
+
+		lblScene.setFont(fontSecondTitle);
+		lblScene.setForeground(clrWhite);
+		lblScene.setHorizontalAlignment(JLabel.CENTER);
+		lblScene.setSize(100, 50);
+
+		lblBand.setFont(fontSecondTitle);
+		lblBand.setForeground(clrWhite);
+		lblBand.setHorizontalAlignment(JLabel.CENTER);
+		lblBand.setSize(100, 50);
+
+		lblStart.setFont(fontSecondTitle);
+		lblStart.setForeground(clrWhite);
+		lblStart.setHorizontalAlignment(JLabel.CENTER);
+		lblStart.setSize(100, 50);
+
+		lblFinish.setFont(fontSecondTitle);
+		lblFinish.setForeground(clrWhite);
+		lblFinish.setHorizontalAlignment(JLabel.CENTER);
+		lblFinish.setSize(100, 50);
+
+		bottompanel.add(lblScene);
+		bottompanel.add(lblBand);
+		bottompanel.add(lblStart);
+		bottompanel.add(lblFinish);
+
+		return bottompanel;
+
+	}
+
+	public JPanel areaBottomPanel() {
+		JPanel areabottompanel = new JPanel(new BorderLayout());
+		areabottompanel.setPreferredSize(new Dimension(800, 220));
+
+		int newRows = 1;
+		JPanel dynamicSchedulePanel = new JPanel(new GridLayout(newRows, 4));
+//		areabottompanel.setBackground(Color.BLACK);
+		dynamicSchedulePanel.setPreferredSize(new Dimension(800, 250));
+
+		JScrollPane scroll = new JScrollPane(dynamicSchedulePanel);
+		scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		scroll.setPreferredSize(new Dimension(800, 200)); // or scroll.setBounds(800, 500, 40, 295);
+
+		btnShow.setFont(fontSecondTitle);
+		btnShow.setBackground(clrSpotifyGreen);
+		btnShow.setForeground(clrWhite);
+		btnShow.setHorizontalAlignment(JLabel.CENTER);
+		btnShow.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		btnShow.setSize(300, 20);
+
+		areabottompanel.add(scroll);
+
+		return areabottompanel;
+	}
+
+	public JPanel buttonPanel() {
+		JPanel buttonpanel = new JPanel(new BorderLayout());
+		buttonpanel.setBackground(clrBackground);
+		buttonpanel.setPreferredSize(new Dimension(800, 60));
+
+		btnShow.setFont(fontSecondTitle);
+		btnShow.setBackground(clrSpotifyGreen);
+		btnShow.setForeground(clrWhite);
+		btnShow.setHorizontalAlignment(JLabel.CENTER);
+		btnShow.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		btnShow.setSize(300, 20);
+
+		buttonpanel.add(btnShow, BorderLayout.CENTER); // west?????
+
+		return buttonpanel;
+
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		if (e.getSource() == listScenes) {
+			JComboBox<String> cbOne = (JComboBox<String>) e.getSource();
+			String strScenes = (String) cbOne.getSelectedItem();
+
+			switch (strScenes) {
+			case "Scene A":
+				lblDropScene.setForeground(Color.RED);
+				break;
+			case "Scene B":
+				lblDropScene.setForeground(Color.YELLOW);
+				break;
+			case "Scene C":
+				lblDropScene.setForeground(Color.BLUE);
+				break;
+			default:
+				lblDropScene.setForeground(Color.WHITE);
+			}
+		}
+
+		if (e.getSource() == listDays) {
+			JComboBox<String> cbTwo = (JComboBox<String>) e.getSource();
+			String strDays = (String) cbTwo.getSelectedItem();
+
+			switch (strDays) {
+			case "Thursday":
+				lblDay.setForeground(Color.RED);
+				break;
+			case "Friday":
+				lblDay.setForeground(Color.YELLOW);
+				break;
+			case "Saturday":
+				lblDay.setForeground(Color.BLUE);
+				break;
+			default:
+				lblDay.setForeground(Color.WHITE);
+			}
+		}
+		
+		//show the schedule
+		if(e.getSource() == btnShow) {
+			
+		}
+
+	}
+
+	public void showUI() {
+		frame = new JFrame("VisitorUI");
+		frame.setPreferredSize(new Dimension(850, 550));
+		frame.getContentPane().setLayout(new BorderLayout());
+		frame.pack();
+		frame.getContentPane().add(this);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+
+	}
+
+	public static void main(String[] args) {
+		VisitorUI ui = new VisitorUI();
+		ui.showUI();
+
+	}
+
+}

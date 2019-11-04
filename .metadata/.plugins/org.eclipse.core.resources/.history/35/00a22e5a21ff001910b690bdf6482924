@@ -1,0 +1,241 @@
+package view;
+
+import java.awt.BorderLayout;
+import model.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
+import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
+
+import controller.PsqlController;
+
+public class BookBandUI extends JPanel implements ActionListener {
+	//controller
+	PsqlController controller = new PsqlController();
+
+	// For upper panel
+	private JLabel lblTitle = new JLabel("BOOK BAND FOR FESTIVAL");
+
+	// For middle panel
+	private JLabel lblBand = new JLabel("BAND");
+	private JLabel lblContactPerson = new JLabel("CONTACT PERSON");
+	private JLabel lblInfo = new JLabel("INFO");
+	private JLabel lblCountry = new JLabel("COUNTRY");
+	private JLabel lblArtist = new JLabel("ARTISTS IN BAND");
+
+	private JTextField tfBand = new JTextField("<band name>");
+	private JTextField tfInfo = new JTextField("<band info>");
+	private JTextField tfCountry = new JTextField("<band country>");
+	private JTextArea taArtists = new JTextArea("<name, role ( seperate multiple artists in band by '.' )>");
+
+	//Drop downs
+	String[] strWorkers;
+	JComboBox<String> listWorkers;//this will be initialized once app starts to dynamically add workers
+	
+	// For buttonBottom panel
+	JButton btnClear = new JButton("CLEAR ALL");
+	JButton btnBook = new JButton("BOOK");
+
+
+	// Other instance variables
+	private Font fontFirstTitle = new Font("SansSerif", Font.PLAIN, 30);
+	private Font fontSecondTitle = new Font("SansSerif", Font.PLAIN, 18);
+	private Font fontText = new Font("SansSerif", Font.ROMAN_BASELINE, 15);
+
+	Color clrBackground = new Color(55, 55, 55);
+	Color clrSpotifyGreen = new Color(78, 183, 57);
+	Color clrWhite = new Color(220, 219, 219);
+
+	public BookBandUI() {
+		dropDownsInit();
+		setBackground(clrBackground);
+		btnClear.setEnabled(true);
+		btnBook.setEnabled(true);
+
+		btnClear.addActionListener(this);
+		btnBook.addActionListener(this);
+		
+		listWorkers.setSelectedIndex(0); // 0 = default
+		listWorkers.addActionListener(this);
+
+		add(upperPanel());
+		add(middlePanel());
+		add(bottomPanel());
+		
+	}
+
+	/**
+	 * Initializes the drop-downs with data from db
+	 */
+	private void dropDownsInit() {
+		//BANDS
+		ArrayList<Worker> workersFromDB = controller.selectWorker(null);
+		strWorkers = new String[workersFromDB.size()+1];
+		strWorkers[0] = "<select band>";
+		for(int i = 0; i<workersFromDB.size(); i++) {
+			System.out.println(workersFromDB.get(i).getName());
+			strWorkers[i+1] = workersFromDB.get(i).getName();
+		}
+		listWorkers = new JComboBox<String>(strWorkers);
+	}
+
+	private void clearAll() {
+
+	}
+
+	public JPanel upperPanel() {
+		JPanel upperpanel = new JPanel(new BorderLayout());
+		upperpanel.setBackground(clrBackground);
+		upperpanel.setPreferredSize(new Dimension(500, 40));
+
+		lblTitle.setFont(fontFirstTitle);
+		lblTitle.setForeground(clrSpotifyGreen);
+		lblTitle.setHorizontalAlignment(JLabel.CENTER);
+
+		upperpanel.add(lblTitle, BorderLayout.NORTH);
+
+		return upperpanel;
+	}
+
+	public JPanel middlePanel() {
+		JPanel middlepanel = new JPanel(new GridLayout(10, 1));
+		middlepanel.setBackground(clrBackground);
+		middlepanel.setPreferredSize(new Dimension(500, 500));
+
+		// labels
+		lblBand.setFont(fontSecondTitle);
+		lblBand.setForeground(clrWhite);
+		lblBand.setHorizontalAlignment(JLabel.CENTER);
+		lblBand.setSize(500, 20);
+
+		lblContactPerson.setFont(fontSecondTitle);
+		lblContactPerson.setForeground(clrWhite);
+		lblContactPerson.setHorizontalAlignment(JLabel.CENTER);
+		lblContactPerson.setSize(500, 20);
+
+		lblInfo.setFont(fontSecondTitle);
+		lblInfo.setForeground(clrWhite);
+		lblInfo.setHorizontalAlignment(JLabel.CENTER);
+		lblInfo.setSize(500, 20);
+
+		lblCountry.setFont(fontSecondTitle);
+		lblCountry.setForeground(clrWhite);
+		lblCountry.setHorizontalAlignment(JLabel.CENTER);
+		lblCountry.setSize(500, 20);
+		
+		lblArtist.setFont(fontSecondTitle);
+		lblArtist.setForeground(clrWhite);
+		lblArtist.setHorizontalAlignment(JLabel.CENTER);
+		lblArtist.setSize(500, 20);
+		
+
+		((JLabel) listWorkers.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
+		listWorkers.setFont(fontText);
+		// textfields
+		tfBand.setFont(fontText);
+		tfBand.setHorizontalAlignment(JLabel.CENTER);
+		tfBand.setSize(500, 20);
+
+		
+
+		tfInfo.setFont(fontText);
+		tfInfo.setHorizontalAlignment(JLabel.CENTER);
+		tfInfo.setSize(500, 20);
+		
+		tfCountry.setFont(fontText);
+		tfCountry.setHorizontalAlignment(JLabel.CENTER);
+		tfCountry.setSize(500, 20);
+		
+		taArtists.setFont(fontText);
+		taArtists.setSize(500, 50);
+
+
+		middlepanel.add(lblBand, BorderLayout.CENTER);
+		middlepanel.add(tfBand, BorderLayout.CENTER);
+
+
+		middlepanel.add(lblContactPerson, BorderLayout.CENTER);
+		middlepanel.add(listWorkers, BorderLayout.CENTER);
+
+		middlepanel.add(lblInfo, BorderLayout.CENTER);
+		middlepanel.add(tfInfo, BorderLayout.CENTER);
+		
+		middlepanel.add(lblCountry, BorderLayout.CENTER);
+		middlepanel.add(tfCountry, BorderLayout.CENTER);
+		
+		middlepanel.add(lblArtist, BorderLayout.CENTER);
+		middlepanel.add(taArtists, BorderLayout.CENTER);
+
+		return middlepanel;
+	}
+
+	public JPanel bottomPanel() {
+		JPanel bottompanel = new JPanel(new GridLayout(1, 2));
+		bottompanel.setBackground(clrBackground);
+		bottompanel.setPreferredSize(new Dimension(500, 110));
+
+		btnClear.setFont(fontSecondTitle);
+		btnClear.setBackground(Color.RED);
+		btnClear.setForeground(clrWhite);
+		btnClear.setOpaque(true);
+		btnClear.setHorizontalAlignment(JLabel.CENTER);
+		btnClear.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		btnClear.setSize(500, 20);
+
+		btnBook.setFont(fontSecondTitle);
+		btnBook.setBackground(clrSpotifyGreen);
+		btnBook.setForeground(clrWhite);
+		btnBook.setOpaque(true);
+		btnBook.setHorizontalAlignment(JLabel.CENTER);
+		btnBook.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		btnBook.setSize(500, 20);
+
+
+		bottompanel.add(btnClear);
+		bottompanel.add(btnBook);
+		bottompanel.setBorder(new EmptyBorder(50, 0,0,0));
+
+		return bottompanel;
+
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+
+		
+
+		//Book
+		if(e.getSource()==btnBook) {
+			//first create entity band in DB
+			controller.insertBand(tfBand.getText(), tfCountry.getText(), tfInfo.getText(), tfContactPerson.getText());
+
+		}
+
+		//Clear
+		if(e.getSource()==btnClear) {
+			clearAll();
+		}
+
+	}
+
+
+}

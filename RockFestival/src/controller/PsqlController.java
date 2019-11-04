@@ -17,7 +17,7 @@ import model.*;
  */
 public class PsqlController {
 	private String credentials = "jdbc:postgresql://pgserver.mah.se/rockfestival_robin_maida?user=ah2881&password=qqolpct3";
-
+	
 	public PsqlController() {
 
 	}
@@ -48,7 +48,7 @@ public class PsqlController {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		System.out.println("created entity in TABLE artist");
+
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class PsqlController {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		System.out.println("created entity in TABLE artist_in_band");
+
 	}
 
 	public void insertBand(String name, String country, String info, String contactPerson) {
@@ -102,7 +102,6 @@ public class PsqlController {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		System.out.println("created entity in TABLE band");
 	}
 
 	public void insertScene(String name, int capacity, String location) {
@@ -125,7 +124,7 @@ public class PsqlController {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		System.out.println("created entity in TABLE scene");
+
 	}
 
 	public void insertSchedule(String band, String scene, String start, String end, String day) {
@@ -148,7 +147,7 @@ public class PsqlController {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		System.out.println("created entity in TABLE schedule");
+
 	}
 
 	public void insertWorker(String personNbr, String name, String address) {
@@ -171,7 +170,7 @@ public class PsqlController {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		System.out.println("created entity in TABLE worker");
+
 	}
 
 	//MARK: UPDATE Statement
@@ -219,7 +218,7 @@ public class PsqlController {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		System.out.println("Retrieved data from TABLE artist");
+
 		return retrievedData;	
 	}
 
@@ -260,7 +259,7 @@ public class PsqlController {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		System.out.println("Retrieved data from TABLE artist_in_band");
+
 		return retrievedData;	
 	}
 
@@ -301,7 +300,7 @@ public class PsqlController {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		System.out.println("Retrieved data from TABLE band");
+
 		return retrievedData;	
 	}
 
@@ -341,7 +340,7 @@ public class PsqlController {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		System.out.println("Retrieved data from TABLE scene");
+
 		return retrievedData;	
 	}
 	
@@ -381,7 +380,7 @@ public class PsqlController {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		System.out.println("Retrieved data from TABLE Schedule");
+
 		return retrievedData;	
 	}
 	
@@ -421,7 +420,6 @@ public class PsqlController {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		System.out.println("Retrieved data from TABLE worker");
 		return retrievedData;	
 	}
 

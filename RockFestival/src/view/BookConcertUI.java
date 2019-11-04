@@ -16,9 +16,11 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 
 import controller.PsqlController;
@@ -28,21 +30,23 @@ public class BookConcertUI extends JPanel implements ActionListener {
 	PsqlController controller = new PsqlController();
 
 	// For upper panel
-	private JLabel lblTitle = new JLabel("SCHEDULE");
+	private JLabel lblTitle = new JLabel("BOOK CONCERT FOR BAND");
 
 	// For middle panel
 	private JLabel lblBand = new JLabel("BAND");
 	private JLabel lblScene = new JLabel("SCENE");
-	private JLabel lblContactPerson = new JLabel("CONTACT PERSON");
-	private JLabel lblInfo = new JLabel("INFO");
+	//	private JLabel lblContactPerson = new JLabel("CONTACT PERSON");
+	//	private JLabel lblInfo = new JLabel("INFO");
 	private JLabel lblDay = new JLabel("DAY");
 
-	private JTextField tfBand = new JTextField("<band name>");
-	private JTextField tfContactPerson = new JTextField("<contact person (person nbr)>");
-	private JTextField tfInfo = new JTextField("<band info>");
+	//	private JTextField tfBand = new JTextField("<band name>");
+	//	private JTextField tfContactPerson = new JTextField("<contact person (person nbr)>");
+	//	private JTextField tfInfo = new JTextField("<band info>");
 
 	// Drop downs
-	String[] strDays = { "<SELECT A DAY>", "Thursday", "Friday", "Saturday" };
+	String[] strBands;
+	JComboBox<String> listBands;//this will be initialized once app starts to dynamically add bands
+	String[] strDays = { "<select day>", "Thursday", "Friday", "Saturday" };
 	JComboBox<String> listDays = new JComboBox<String>(strDays);
 	String[] strScenes; //this will be initialized once app starts to dynamically add scenes
 	JComboBox<String> listScenes;
@@ -59,8 +63,8 @@ public class BookConcertUI extends JPanel implements ActionListener {
 	JButton btnClear = new JButton("CLEAR ALL");
 	JButton btnBook = new JButton("BOOK");
 
+
 	// Other instance variables
-	private JFrame frame;
 	private Font fontFirstTitle = new Font("SansSerif", Font.PLAIN, 30);
 	private Font fontSecondTitle = new Font("SansSerif", Font.PLAIN, 18);
 	private Font fontText = new Font("SansSerif", Font.ROMAN_BASELINE, 15);
@@ -70,19 +74,12 @@ public class BookConcertUI extends JPanel implements ActionListener {
 	Color clrWhite = new Color(220, 219, 219);
 
 	public BookConcertUI() {
-		//initialize scene drop-down array
-		ArrayList<Scene> scenesFromDB = controller.selectScene(null);
-		strScenes = new String[scenesFromDB.size()+1];
-		strScenes[0] = "<select scene>";
-		
-		for(int i = 0; i<scenesFromDB.size(); i++) {
-			strScenes[i+1] = scenesFromDB.get(i).getName();
-		}
-		listScenes = new JComboBox<String>(strScenes);
+		//initialize scene drop-downs array
+		dropDownsInit();
 
 		setBackground(clrBackground);
-		btnClear.setEnabled(false);
-		btnBook.setEnabled(false);
+		btnClear.setEnabled(true);
+		btnBook.setEnabled(true);
 
 		btnClear.addActionListener(this);
 		btnBook.addActionListener(this);
@@ -90,13 +87,45 @@ public class BookConcertUI extends JPanel implements ActionListener {
 		// DropDown for lblday and lblscene
 		listDays.setSelectedIndex(0); // 0 = default
 		listDays.addActionListener(this);
-		
+
 		listScenes.setSelectedIndex(0); // 0 = default
 		listScenes.addActionListener(this);
 
 		add(upperPanel());
 		add(middlePanel());
 		add(bottomPanel());
+	}
+
+	/**
+	 * Initializes the drop-downs with data from db
+	 */
+	private void dropDownsInit() {
+		//SCENES
+		ArrayList<Scene> scenesFromDB = controller.selectScene(null);
+		strScenes = new String[scenesFromDB.size()+1];
+		strScenes[0] = "<select scene>";
+		for(int i = 0; i<scenesFromDB.size(); i++) {
+			strScenes[i+1] = scenesFromDB.get(i).getName();
+		}
+		listScenes = new JComboBox<String>(strScenes);
+
+		//BANDS
+		ArrayList<Band> bandsFromDB = controller.selectBand(null);
+		strBands = new String[bandsFromDB.size()+1];
+		strBands[0] = "<select band>";
+		for(int i = 0; i<bandsFromDB.size(); i++) {
+			System.out.println(bandsFromDB.get(i).getName());
+			strBands[i+1] = bandsFromDB.get(i).getName();
+		}
+		listBands = new JComboBox<String>(strBands);
+	}
+	
+	private void clearAll() {
+		listBands.setSelectedIndex(0);
+		listScenes.setSelectedIndex(0);
+		listDays.setSelectedIndex(0);
+		tfStart.setText("HH:MM");
+		tfFinish.setText("HH:MM");
 	}
 
 	public JPanel upperPanel() {
@@ -114,7 +143,7 @@ public class BookConcertUI extends JPanel implements ActionListener {
 	}
 
 	public JPanel middlePanel() {
-		JPanel middlepanel = new JPanel(new GridLayout(10, 1));
+		JPanel middlepanel = new JPanel(new GridLayout(6, 1));
 		middlepanel.setBackground(clrBackground);
 		middlepanel.setPreferredSize(new Dimension(500, 400));
 
@@ -129,15 +158,15 @@ public class BookConcertUI extends JPanel implements ActionListener {
 		lblScene.setHorizontalAlignment(JLabel.CENTER);
 		lblScene.setSize(500, 20);
 
-		lblContactPerson.setFont(fontSecondTitle);
-		lblContactPerson.setForeground(clrWhite);
-		lblContactPerson.setHorizontalAlignment(JLabel.CENTER);
-		lblContactPerson.setSize(500, 20);
+		//		lblContactPerson.setFont(fontSecondTitle);
+		//		lblContactPerson.setForeground(clrWhite);
+		//		lblContactPerson.setHorizontalAlignment(JLabel.CENTER);
+		//		lblContactPerson.setSize(500, 20);
 
-		lblInfo.setFont(fontSecondTitle);
-		lblInfo.setForeground(clrWhite);
-		lblInfo.setHorizontalAlignment(JLabel.CENTER);
-		lblInfo.setSize(500, 20);
+		//		lblInfo.setFont(fontSecondTitle);
+		//		lblInfo.setForeground(clrWhite);
+		//		lblInfo.setHorizontalAlignment(JLabel.CENTER);
+		//		lblInfo.setSize(500, 20);
 
 		lblDay.setFont(fontSecondTitle);
 		lblDay.setForeground(clrWhite);
@@ -145,17 +174,21 @@ public class BookConcertUI extends JPanel implements ActionListener {
 		lblDay.setSize(500, 20);
 
 		// textfields
-		tfBand.setFont(fontText);
-		tfBand.setHorizontalAlignment(JLabel.CENTER);
-		tfBand.setSize(500, 20);
+		//		tfBand.setFont(fontText);
+		//		tfBand.setHorizontalAlignment(JLabel.CENTER);
+		//		tfBand.setSize(500, 20);
 
-		tfContactPerson.setFont(fontText);
-		tfContactPerson.setHorizontalAlignment(JLabel.CENTER);
-		tfContactPerson.setSize(500, 20);
+		//		tfContactPerson.setFont(fontText);
+		//		tfContactPerson.setHorizontalAlignment(JLabel.CENTER);
+		//		tfContactPerson.setSize(500, 20);
+		//
+		//		tfInfo.setFont(fontText);
+		//		tfInfo.setHorizontalAlignment(JLabel.CENTER);
+		//		tfInfo.setSize(500, 20);
 
-		tfInfo.setFont(fontText);
-		tfInfo.setHorizontalAlignment(JLabel.CENTER);
-		tfInfo.setSize(500, 20);
+		((JLabel) listBands.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
+		listBands.setFont(fontText);
+
 
 		((JLabel) listScenes.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
 		listScenes.setFont(fontText);
@@ -164,16 +197,16 @@ public class BookConcertUI extends JPanel implements ActionListener {
 		listDays.setFont(fontText);
 
 		middlepanel.add(lblBand, BorderLayout.CENTER);
-		middlepanel.add(tfBand, BorderLayout.CENTER);
+		middlepanel.add(listBands, BorderLayout.CENTER);
 
 		middlepanel.add(lblScene, BorderLayout.CENTER);
 		middlepanel.add(listScenes, BorderLayout.CENTER);
 
-		middlepanel.add(lblContactPerson, BorderLayout.CENTER);
-		middlepanel.add(tfContactPerson, BorderLayout.CENTER);
+		//middlepanel.add(lblContactPerson, BorderLayout.CENTER);
+		//middlepanel.add(tfContactPerson, BorderLayout.CENTER);
 
-		middlepanel.add(lblInfo, BorderLayout.CENTER);
-		middlepanel.add(tfInfo, BorderLayout.CENTER);
+		//middlepanel.add(lblInfo, BorderLayout.CENTER);
+		//middlepanel.add(tfInfo, BorderLayout.CENTER);
 
 		middlepanel.add(lblDay, BorderLayout.CENTER);
 		middlepanel.add(listDays, BorderLayout.CENTER);
@@ -205,13 +238,17 @@ public class BookConcertUI extends JPanel implements ActionListener {
 		tfFinish.setSize(500, 20);
 
 		btnClear.setFont(fontSecondTitle);
-		btnClear.setBackground(clrSpotifyGreen);
+		btnClear.setBackground(Color.RED);
+		btnClear.setForeground(clrWhite);
+		btnClear.setOpaque(true);
 		btnClear.setHorizontalAlignment(JLabel.CENTER);
 		btnClear.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		btnClear.setSize(500, 20);
 
 		btnBook.setFont(fontSecondTitle);
 		btnBook.setBackground(clrSpotifyGreen);
+		btnBook.setForeground(clrWhite);
+		btnBook.setOpaque(true);
 		btnBook.setHorizontalAlignment(JLabel.CENTER);
 		btnBook.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		btnBook.setSize(500, 20);
@@ -256,13 +293,38 @@ public class BookConcertUI extends JPanel implements ActionListener {
 				lblDay.setForeground(Color.WHITE);
 			}
 		}
-		
+
 		//Book
 		if(e.getSource()==btnBook) {
+			//get value of band drop-down
+			JComboBox<String> band = (JComboBox<String>) listBands;
+			String strBand = (String) band.getSelectedItem();
+			//get value of scene drop-down
+			JComboBox<String> scene = (JComboBox<String>) listScenes;
+			String strScene = (String) scene.getSelectedItem();
+			//get value of days drop-down
+			JComboBox<String> day = (JComboBox<String>) listDays;
+			String strDay = (String) day.getSelectedItem();
+
+			//insert to db
+			if((strBand!="<select band>")&&(strScene!="<select scene>")&&
+					(strDay!="<select day>")&&(!tfStart.getText().equals("HH:MM"))&&
+					(!tfFinish.getText().equals("HH:MM"))) {
+				controller.insertSchedule(strBand, strScene, tfStart.getText(), tfFinish.getText(), strDay);
+				JOptionPane.showMessageDialog(null, "Concert booked!");
+				clearAll();
+			} else {
+				JOptionPane.showMessageDialog(null, "Please select all values");
+			}
 			
+		}
+		
+		//Clear
+		if(e.getSource()==btnClear) {
+			clearAll();
 		}
 
 	}
-	
+
 
 }
